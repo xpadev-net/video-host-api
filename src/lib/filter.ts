@@ -1,4 +1,4 @@
-import {FilteredEpisode, FilteredSeries, FilteredUser} from "@/@types/models";
+import {FilteredMovie, FilteredSeries, FilteredUser} from "@/@types/models";
 
 export const filterUser = (user: FilteredUser): FilteredUser => {
   return {
@@ -16,7 +16,7 @@ export const filterSeries = (series: FilteredSeries): FilteredSeries => {
   }
 }
 
-export const filterEpisode = (episode: FilteredEpisode): FilteredEpisode => {
+export const filterMovie = (episode: FilteredMovie): FilteredMovie => {
   return {
     id: episode.id,
     title: episode.title,

@@ -10,7 +10,7 @@ export type FilteredSeries = {
   author: FilteredUser,
 }
 
-export type FilteredEpisode = {
+export type FilteredMovie = {
   id: string,
   title: string,
   description?: string | null,
