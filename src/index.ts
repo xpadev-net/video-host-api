@@ -1,12 +1,11 @@
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
 import {registerRoute} from "./routes";
+import {registerMiddleware} from "./middleware";
 
 const app = new Hono()
 
-app.get('/', (c) => {
-  return c.text('Hello Hono!')
-})
+registerMiddleware(app);
 
 registerRoute(app);
 
