@@ -14,7 +14,10 @@ export const handleAuth = (app: Hono) => {
     }
     const token = c.req.header().authorization?.replace("Bearer ", "");
     if (!token){
-      return c.json({error: "Unauthorized"}, 401);
+      return c.json({
+        status: "error",
+        message: "Unauthorized"
+      }, 401);
     }
     const session = await prisma.session.findFirst({
       where: {
@@ -22,7 +25,10 @@ export const handleAuth = (app: Hono) => {
       }
     })
     if (!session){
-      return c.json({error: "Unauthorized"}, 401);
+      return c.json({
+        status: "error",
+        message: "Unauthorized"
+      }, 401);
     }
     await next();
   })
