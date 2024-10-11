@@ -1,9 +1,9 @@
 import {Hono} from "hono";
 import { zValidator } from '@hono/zod-validator'
 import {z} from "zod";
-import {prisma} from "../../../lib/prisma";
+import {prisma} from "@/lib/prisma";
 import bcrypt from "bcrypt";
-import {PASSWORD_HASH_ROUNDS, TOKEN_EXPIRY} from "../../../env";
+import {PASSWORD_HASH_ROUNDS, PASSWORD_SALT, TOKEN_EXPIRY} from "@/env";
 
 const authSchema = z.object({
   username: z.string(),
@@ -27,7 +27,7 @@ export const registerAuthRoute = (app: Hono) => {
         message: "Invalid username or password",
       }, 401);
     }
-    const passwordHash = await bcrypt.hash(password + PASSWORD_HASH_ROUNDS, PASSWORD_HASH_ROUNDS);
+    const passwordHash = await bcrypt.hash(password + PASSWORD_SALT, PASSWORD_HASH_ROUNDS);
     if(passwordHash !== user.password) {
       return c.json({
         status: "error",
