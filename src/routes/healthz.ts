@@ -1,6 +1,6 @@
-import {Hono} from "hono";
+import {HonoApp} from "@/@types/hono";
 
-export const registerHealthzRoute = (app: Hono) => {
+export const registerHealthzRoute = (app: HonoApp) => {
   app.get("/healthz", async (c) => {
     return c.json({
       status: "ok"

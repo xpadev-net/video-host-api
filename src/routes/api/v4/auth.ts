@@ -1,16 +1,17 @@
-import {Hono} from "hono";
 import { zValidator } from '@hono/zod-validator'
 import {z} from "zod";
 import {prisma} from "@/lib/prisma";
 import bcrypt from "bcrypt";
 import {PASSWORD_HASH_ROUNDS, PASSWORD_SALT, TOKEN_EXPIRY} from "@/env";
+import {HonoApp} from "@/@types/hono";
+import {hashPassword} from "@/lib/password";
 
 const authSchema = z.object({
   username: z.string(),
   password: z.string(),
 })
 
-export const registerAuthRoute = (app: Hono) => {
+export const registerAuthRoute = (app: HonoApp) => {
   app.post("/auth", zValidator('json',authSchema), async(c) => {
     const {username,password} = c.req.valid("json");
     const user = await prisma.user.findFirst({
@@ -27,7 +28,7 @@ export const registerAuthRoute = (app: Hono) => {
         message: "Invalid username or password",
       }, 401);
     }
-    const passwordHash = await bcrypt.hash(password + PASSWORD_SALT, PASSWORD_HASH_ROUNDS);
+    const passwordHash = await hashPassword(password);
     if(passwordHash !== user.password) {
       return c.json({
         status: "error",

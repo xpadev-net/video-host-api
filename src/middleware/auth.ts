@@ -1,35 +1,49 @@
-import {Hono} from "hono";
-import {bearerAuth} from "hono/bearer-auth";
-import {prisma} from "../lib/prisma";
-import {PUBLIC_ENDPOINTS} from "../env";
+import {prisma} from "@/lib/prisma";
+import {PUBLIC_ENDPOINTS} from "@/env";
+import {createMiddleware} from "hono/factory";
+import {HonoApp} from "@/@types/hono";
 
-export const handleAuth = (app: Hono) => {
-  app.use("/*", async(c, next) => {
-    const url = new URL(c.req.url);
-    for (const publicPath of PUBLIC_ENDPOINTS){
-      if (url.pathname.startsWith(publicPath)){
-        await next();
-        return;
-      }
-    }
-    const token = c.req.header().authorization?.replace("Bearer ", "");
-    if (!token){
-      return c.json({
-        status: "error",
-        message: "Unauthorized"
-      }, 401);
-    }
-    const session = await prisma.session.findFirst({
-      where: {
-        token
-      }
-    })
-    if (!session){
-      return c.json({
-        status: "error",
-        message: "Unauthorized"
-      }, 401);
-    }
-    await next();
-  })
+export const handleAuth = (app: HonoApp) => {
+  app.use("/*", authMiddleware);
 }
+
+const authMiddleware = createMiddleware<{
+  Variables: {
+    user: {
+      id: string;
+      username: string;
+      name: string;
+    }
+  }
+}>(async(c, next) => {
+  const url = new URL(c.req.url);
+  for (const publicPath of PUBLIC_ENDPOINTS){
+    if (url.pathname.startsWith(publicPath)){
+      await next();
+      return;
+    }
+  }
+  const token = c.req.header().authorization?.replace("Bearer ", "");
+  if (!token){
+    return c.json({
+      status: "error",
+      message: "Unauthorized"
+    }, 401);
+  }
+  const session = await prisma.session.findFirst({
+    where: {
+      token
+    },
+    include: {
+      user: true
+    }
+  })
+  if (!session){
+    return c.json({
+      status: "error",
+      message: "Unauthorized"
+    }, 401);
+  }
+  c.set("user", session.user);
+  await next();
+});

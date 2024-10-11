@@ -1,8 +1,8 @@
 import {handleCors} from "./cors";
-import {Hono} from "hono";
 import {handleAuth} from "./auth";
+import {HonoApp} from "@/@types/hono";
 
-export const registerMiddleware = (app: Hono) => {
+export const registerMiddleware = (app: HonoApp) => {
   handleCors(app);
   handleAuth(app);
 }
