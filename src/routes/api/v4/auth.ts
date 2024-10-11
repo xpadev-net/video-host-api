@@ -1,8 +1,7 @@
 import { zValidator } from '@hono/zod-validator'
 import {z} from "zod";
 import {prisma} from "@/lib/prisma";
-import bcrypt from "bcrypt";
-import {PASSWORD_HASH_ROUNDS, PASSWORD_SALT, TOKEN_EXPIRY} from "@/env";
+import {TOKEN_EXPIRY} from "@/env";
 import {HonoApp} from "@/@types/hono";
 import {hashPassword} from "@/lib/password";
 

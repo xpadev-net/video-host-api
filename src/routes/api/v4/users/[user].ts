@@ -10,9 +10,9 @@ export const registerUsersDetailsRoute = (app: HonoApp) => {
         message: "No user specified"
       }, 400);
     }
-    const user = prisma.user.findFirst({
+    const user = await prisma.user.findUnique({
       where: {
-        id: userId
+        username: userId
       }
     });
     if (!user){
@@ -23,7 +23,10 @@ export const registerUsersDetailsRoute = (app: HonoApp) => {
     }
     return c.json({
       status: "ok",
-      user
+      user: {
+        username: user.username,
+        name: user.name,
+      }
     });
   });
 }
