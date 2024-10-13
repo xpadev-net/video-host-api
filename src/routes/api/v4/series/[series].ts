@@ -46,6 +46,13 @@ const PatchSchema = z.object({
 
 const handlePatch = (app: HonoApp) => {
   app.patch("/:series", zValidator("json", PatchSchema), async(c) => {
+    const user = c.get("user");
+    if (!user) {
+      return c.json({
+        status: "error",
+        message: "Unauthorized",
+      }, 401);
+    }
     const param = c.req.param("series");
     if (!param) {
       return c.json({
@@ -57,6 +64,7 @@ const handlePatch = (app: HonoApp) => {
       const series = await prisma.series.findUnique({
         where: {
           id: param,
+          authorId: user.id,
         },
       });
       if (!series) {
