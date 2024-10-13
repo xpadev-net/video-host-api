@@ -50,6 +50,7 @@ model Movie {
   authorId    String
   series      Series?  @relation(fields: [seriesId], references: [id])
   seriesId    String?
+  contentUrl  String
   note        String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

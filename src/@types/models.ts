@@ -14,6 +14,7 @@ export type FilteredMovie = {
   id: string,
   title: string,
   description?: string | null,
+  contentUrl: string,
   author: FilteredUser,
   series?: FilteredSeries | null,
 }

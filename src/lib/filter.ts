@@ -21,6 +21,7 @@ export const filterMovie = (episode: FilteredMovie): FilteredMovie => {
     id: episode.id,
     title: episode.title,
     description: episode.description,
+    contentUrl: episode.contentUrl,
     author: filterUser(episode.author),
     series: episode.series ? filterSeries(episode.series) : undefined,
   }
