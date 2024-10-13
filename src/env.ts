@@ -8,3 +8,4 @@ export const PASSWORD_HASH_ROUNDS = parseInt(process.env.PASSWORD_HASH_ROUNDS ||
 export const TOKEN_EXPIRY = parseInt(process.env.TOKEN_EXPIRY || "604800") * 1000; //convert seconds to milliseconds
 export const SIGNUP_ENABLED = process.env.SIGNUP_ENABLED === "true";
 export const SIGNUP_CODE = process.env.SIGNUP_CODE;
+export const PORT = parseInt(process.env.PORT || "3000");
