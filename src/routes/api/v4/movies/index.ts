@@ -53,6 +53,16 @@ const registerPostIndexRoute = (app: HonoApp) => {
         author: true,
       }
     });
+    if (data.seriesId){
+      await prisma.series.update({
+        where: {
+          id: data.seriesId,
+        },
+        data: {
+          updatedAt: new Date(),
+        }
+      })
+    }
     return c.json({
       status: "ok",
       movie: filterMovie(movie),

@@ -9,8 +9,35 @@ import {filterSeries} from "@/lib/filter";
 export const registerSeriesRoutes = (app: HonoApp) => {
   const api = new Hono() as HonoApp;
   registerSeriesRoute(api);
+  registerGetIndexRoute(api);
   registerPostIndexRoute(api);
   app.route("/series", api);
+}
+
+const registerGetIndexRoute = (app: HonoApp) => {
+  app.get("/", async(c) => {
+    const series = await prisma.series.findMany({
+      include: {
+        movies: {
+          orderBy: {
+            createdAt: "desc",
+          },
+          take: 10,
+          include:{
+            author: true,
+          }
+        },
+        author: true,
+      },
+      orderBy:{
+        updatedAt: "desc",
+      }
+    });
+    return c.json({
+      status: "ok",
+      series: series.map(filterSeries),
+    })
+  });
 }
 
 const PostSeriesSchema = z.object({
