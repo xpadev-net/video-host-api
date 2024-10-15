@@ -1,9 +1,9 @@
 import { zValidator } from '@hono/zod-validator'
 import {z} from "zod";
 import {prisma} from "@/lib/prisma";
-import {TOKEN_EXPIRY} from "@/env";
 import {HonoApp} from "@/@types/hono";
 import {hashPassword} from "@/lib/password";
+import {createSession} from "@/lib/session";
 
 const authSchema = z.object({
   username: z.string(),
@@ -34,14 +34,7 @@ export const registerAuthRoute = (app: HonoApp) => {
         message: "Invalid username or password",
       }, 401);
     }
-    const token = Math.random().toString(36).substring(7);
-    await prisma.session.create({
-      data: {
-        token,
-        userId: user.id,
-        expiredAt: new Date(Date.now() + TOKEN_EXPIRY)
-      }
-    });
+    const token = createSession(user.id);
     return c.json({
       status: "ok",
       token

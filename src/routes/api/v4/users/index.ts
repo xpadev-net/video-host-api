@@ -7,6 +7,7 @@ import {zValidator} from "@hono/zod-validator";
 import {SIGNUP_CODE, SIGNUP_ENABLED} from "@/env";
 import {prisma} from "@/lib/prisma";
 import {hashPassword} from "@/lib/password";
+import {createSession} from "@/lib/session";
 
 export const registerUsersRoute = (app: HonoApp) => {
   const api = new Hono() as HonoApp;
@@ -46,9 +47,11 @@ const registerPostIndexRoute = (app: HonoApp) => {
           password: await hashPassword(password),
         }
       });
+      const token = await createSession(user.id);
       return c.json({
         status: "ok",
-        user
+        user,
+        token
       });
     }catch(e){
       return c.json({
