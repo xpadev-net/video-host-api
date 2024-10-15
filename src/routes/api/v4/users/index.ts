@@ -8,6 +8,7 @@ import {SIGNUP_CODE, SIGNUP_ENABLED} from "@/env";
 import {prisma} from "@/lib/prisma";
 import {hashPassword} from "@/lib/password";
 import {createSession} from "@/lib/session";
+import {filterUser} from "@/lib/filter";
 
 export const registerUsersRoute = (app: HonoApp) => {
   const api = new Hono() as HonoApp;
@@ -50,7 +51,7 @@ const registerPostIndexRoute = (app: HonoApp) => {
       const token = await createSession(user.id);
       return c.json({
         status: "ok",
-        user,
+        user: filterUser(user),
         token
       });
     }catch(e){
