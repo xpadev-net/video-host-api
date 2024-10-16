@@ -10,10 +10,10 @@ importers:
     dependencies:
       '@hono/node-server':
         specifier: ^1.13.2
-        version: 1.13.2(hono@4.6.3)
+        version: 1.13.2(hono@4.6.5)
       '@hono/zod-validator':
         specifier: ^0.4.1
-        version: 0.4.1(hono@4.6.3)(zod@3.23.8)
+        version: 0.4.1(hono@4.6.5)(zod@3.23.8)
       '@prisma/client':
         specifier: 5.20.0
         version: 5.20.0(prisma@5.20.0)
@@ -24,8 +24,8 @@ importers:
         specifier: ^16.4.5
         version: 16.4.5
       hono:
-        specifier: ^4.6.3
-        version: 4.6.3
+        specifier: ^4.6.5
+        version: 4.6.5
       prisma:
         specifier: ^5.20.0
         version: 5.20.0
@@ -333,8 +333,8 @@ packages:
   has-unicode@2.0.1:
     resolution: {integrity: sha512-8Rf9Y83NBReMnx0gFzA8JImQACstCYWUplepDa9xprwwtmgEZUF0h/i5xSA625zB/I37EtrswSST6OXxwaaIJQ==}
 
-  hono@4.6.3:
-    resolution: {integrity: sha512-0LeEuBNFeSHGqZ9sNVVgZjB1V5fmhkBSB0hZrpqStSMLOWgfLy0dHOvrjbJh0H2khsjet6rbHfWTHY0kpYThKQ==}
+  hono@4.6.5:
+    resolution: {integrity: sha512-qsmN3V5fgtwdKARGLgwwHvcdLKursMd+YOt69eGpl1dUCJb8mCd7hZfyZnBYjxCegBG7qkJRQRUy2oO25yHcyQ==}
     engines: {node: '>=16.9.0'}
 
   https-proxy-agent@5.0.1:
@@ -567,13 +567,13 @@ snapshots:
   '@esbuild/win32-x64@0.23.1':
     optional: true
 
-  '@hono/node-server@1.13.2(hono@4.6.3)':
+  '@hono/node-server@1.13.2(hono@4.6.5)':
     dependencies:
-      hono: 4.6.3
+      hono: 4.6.5
 
-  '@hono/zod-validator@0.4.1(hono@4.6.3)(zod@3.23.8)':
+  '@hono/zod-validator@0.4.1(hono@4.6.5)(zod@3.23.8)':
     dependencies:
-      hono: 4.6.3
+      hono: 4.6.5
       zod: 3.23.8
 
   '@mapbox/node-pre-gyp@1.0.11':
@@ -739,7 +739,7 @@ snapshots:
 
   has-unicode@2.0.1: {}
 
-  hono@4.6.3: {}
+  hono@4.6.5: {}
 
   https-proxy-agent@5.0.1:
     dependencies:
