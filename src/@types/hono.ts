@@ -1,11 +1,8 @@
 import {Hono} from "hono";
+import { User } from '@prisma/client'
 
 export type HonoApp = Hono<{
   Variables: {
-    user?: {
-      id: string;
-      username: string;
-      name: string;
-    }
+    user?: User;
   }
 }>;

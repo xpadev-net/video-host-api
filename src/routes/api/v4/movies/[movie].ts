@@ -41,7 +41,7 @@ const handleGet = (app: HonoApp) => {
 
     if(movie.visibility === "PRIVATE") {
       const user = c.get("user");
-      if (!user || user.id !== movie.authorId) {
+      if (!user || (user.id !== movie.authorId && user.role !== "ADMIN")) {
         return c.json({
           status: "error",
           message: "Movie not found"

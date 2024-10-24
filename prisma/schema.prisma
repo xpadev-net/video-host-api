@@ -13,11 +13,17 @@ enum Visibility {
   PRIVATE
 }
 
+enum Role {
+  USER
+  ADMIN
+}
+
 model User {
   id        String    @id @default(uuid())
   name      String
   username  String    @unique
   password  String? // if null, it means the user is using by system
+  role      Role      @default(USER)
   Series    Series[]
   Movie     Movie[]
   note      String?

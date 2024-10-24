@@ -16,15 +16,13 @@ const authMiddleware = createMiddleware<{
     }
   }
 }>(async(c, next) => {
-  const url = new URL(c.req.url);
-  for (const publicPath of PUBLIC_ENDPOINTS){
-    if (url.pathname.startsWith(publicPath)){
+  const url = (new URL(c.req.url)).pathname;
+  const token = c.req.header().authorization?.replace("Bearer ", "");
+  if (!token){
+    if (isPublicEndpoint(url)){
       await next();
       return;
     }
-  }
-  const token = c.req.header().authorization?.replace("Bearer ", "");
-  if (!token){
     return c.json({
       status: "error",
       message: "Unauthorized"
@@ -47,3 +45,12 @@ const authMiddleware = createMiddleware<{
   c.set("user", session.user);
   await next();
 });
+
+const isPublicEndpoint = (url: string) => {
+  for (const publicPath of PUBLIC_ENDPOINTS){
+    if (url.startsWith(publicPath)){
+      return true;
+    }
+  }
+  return false;
+}

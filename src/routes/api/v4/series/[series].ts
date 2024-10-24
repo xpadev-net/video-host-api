@@ -36,7 +36,7 @@ const handleGet = (app: HonoApp) => {
 
     if(series.visibility === "PRIVATE") {
       const user = c.get("user");
-      if (!user || user.id !== series.authorId) {
+      if (!user || (user.id !== series.authorId && user.role !== "ADMIN")) {
         return c.json({
           status: "error",
           message: "Series not found",
