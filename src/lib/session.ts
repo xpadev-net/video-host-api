@@ -1,13 +1,19 @@
 import {prisma} from "@/lib/prisma";
-import {TOKEN_EXPIRY} from "@/env";
+import {JWT_SECRET, TOKEN_EXPIRY} from "@/env";
+import jwt from "jsonwebtoken";
 
 export const createSession = async(userId: string): Promise<string> => {
-  const token = Math.random().toString(36).substring(7);
+  const expiredAt = new Date(Date.now() + TOKEN_EXPIRY);
+  const token = jwt.sign({
+    userId,
+    expiredAt
+  }, JWT_SECRET);
+
   await prisma.session.create({
     data: {
       token,
       userId,
-      expiredAt: new Date(Date.now() + TOKEN_EXPIRY)
+      expiredAt,
     }
   });
   return token;

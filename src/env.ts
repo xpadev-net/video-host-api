@@ -9,3 +9,4 @@ export const TOKEN_EXPIRY = parseInt(process.env.TOKEN_EXPIRY || "604800") * 100
 export const SIGNUP_ENABLED = process.env.SIGNUP_ENABLED === "true";
 export const SIGNUP_CODE = process.env.SIGNUP_CODE;
 export const PORT = parseInt(process.env.PORT || "3000");
+export const JWT_SECRET = process.env.JWT_SECRET || "secret";
