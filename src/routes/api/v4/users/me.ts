@@ -2,6 +2,7 @@ import {HonoApp} from "@/@types/hono";
 import {z} from "zod";
 import {zValidator} from "@hono/zod-validator";
 import {prisma} from "@/lib/prisma";
+import {filterUser} from "@/lib/filter";
 
 export const registerUsersMeRoute = (app: HonoApp) => {
   registerGet(app);
@@ -19,7 +20,7 @@ const registerGet = (app: HonoApp) => {
     }
     return c.json({
       status: "ok",
-      user
+      user: filterUser(user)
     });
   });
 }
