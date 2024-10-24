@@ -2,7 +2,7 @@ import { zValidator } from '@hono/zod-validator'
 import {z} from "zod";
 import {prisma} from "@/lib/prisma";
 import {HonoApp} from "@/@types/hono";
-import {hashPassword, isPasswordValid} from "@/lib/password";
+import { isPasswordValid} from "@/lib/password";
 import {createSession} from "@/lib/session";
 
 const passwordAuthSchema = z.object({
