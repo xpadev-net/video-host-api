@@ -5,14 +5,48 @@ import {HonoApp} from "@/@types/hono";
 import {hashPassword, isPasswordValid} from "@/lib/password";
 import {createSession} from "@/lib/session";
 
-const authSchema = z.object({
+const passwordAuthSchema = z.object({
   username: z.string(),
   password: z.string(),
-})
+  type: z.literal("password").optional().default("password"),
+});
+
+const tokenAuthSchema = z.object({
+  token: z.string(),
+  type: z.literal("token").optional().default("token"),
+});
+
+const authSchema = z.union([
+  passwordAuthSchema,
+  tokenAuthSchema,
+])
 
 export const registerAuthRoute = (app: HonoApp) => {
   app.post("/auth", zValidator('json',authSchema), async(c) => {
-    const {username,password} = c.req.valid("json");
+    const data = c.req.valid("json");
+    if (data.type === "token") {
+      const {token} = data;
+      const session = await prisma.session.findFirst({
+        where: {
+          token,
+          expiredAt: {
+            gte: new Date(),
+          }
+        }
+      });
+      if(!session) {
+        return c.json({
+          status: "error",
+          message: "Invalid token",
+        }, 401);
+      }
+      const newToken = await createSession(session.userId);
+      return c.json({
+        status: "ok",
+        token: newToken,
+      });
+    }
+    const {username, password} = data;
     const user = await prisma.user.findFirst({
       where: {
         username,
