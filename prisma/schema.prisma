@@ -28,6 +28,8 @@ model Session {
   expiredAt DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([token(length: 1024)], name: "idx_session_token")
 }
 
 model Series {
