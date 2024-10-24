@@ -5,6 +5,7 @@ import {z} from "zod";
 import {zValidator} from "@hono/zod-validator";
 import {prisma} from "@/lib/prisma";
 import {filterSeries} from "@/lib/filter";
+import {ZVisibility} from "@/@types/models";
 
 export const registerSeriesRoutes = (app: HonoApp) => {
   const api = new Hono() as HonoApp;
@@ -29,6 +30,9 @@ const registerGetIndexRoute = (app: HonoApp) => {
         },
         author: true,
       },
+      where:{
+        visibility: "PUBLIC",
+      },
       orderBy:{
         updatedAt: "desc",
       }
@@ -43,6 +47,7 @@ const registerGetIndexRoute = (app: HonoApp) => {
 const PostSeriesSchema = z.object({
   title: z.string(),
   description: z.string(),
+  visibility: ZVisibility.optional().default("PUBLIC"),
 });
 
 const registerPostIndexRoute = (app: HonoApp) => {
@@ -54,18 +59,13 @@ const registerPostIndexRoute = (app: HonoApp) => {
         message: "Unauthorized",
       }, 401);
     }
-    const data = c.req.valid("json");
-    if (!data) {
-      return c.json({
-        status: "error",
-        message: "Invalid data",
-      }, 400);
-    }
+    const {title,description,visibility} = c.req.valid("json");
     const series = await prisma.series.create({
       data: {
-        title: data.title,
-        description: data.description,
+        title: title,
+        description: description,
         authorId: user.id,
+        visibility: visibility,
       },
       include: {
         author: true,

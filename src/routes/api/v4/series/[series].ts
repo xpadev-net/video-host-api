@@ -3,6 +3,7 @@ import {prisma} from "@/lib/prisma";
 import {filterSeries} from "@/lib/filter";
 import {z} from "zod";
 import {zValidator} from "@hono/zod-validator";
+import {ZVisibility} from "@/@types/models";
 
 export const registerSeriesRoute = (app: HonoApp) => {
   handleGet(app);
@@ -32,6 +33,17 @@ const handleGet = (app: HonoApp) => {
         message: "Series not found",
       }, 404);
     }
+
+    if(series.visibility === "PRIVATE") {
+      const user = c.get("user");
+      if (!user || user.id !== series.authorId) {
+        return c.json({
+          status: "error",
+          message: "Series not found",
+        }, 404);
+      }
+    }
+
     return c.json({
       status: "ok",
       series: filterSeries(series),
@@ -42,6 +54,7 @@ const handleGet = (app: HonoApp) => {
 const PatchSchema = z.object({
   title: z.string(),
   description: z.string().optional(),
+  visibility: ZVisibility.optional(),
 });
 
 const handlePatch = (app: HonoApp) => {
@@ -74,14 +87,16 @@ const handlePatch = (app: HonoApp) => {
         }, 404);
       }
     }
-    const {title, description} = c.req.valid("json");
+    const {title, description,visibility} = c.req.valid("json");
     const series = await prisma.series.update({
       where: {
         id: param,
+        authorId: user.id,
       },
       data: {
         title,
         description,
+        visibility,
       },
       include: {
         author: true,

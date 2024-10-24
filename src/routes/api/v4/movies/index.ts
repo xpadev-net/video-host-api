@@ -5,6 +5,7 @@ import {z} from "zod";
 import {zValidator} from "@hono/zod-validator";
 import {prisma} from "@/lib/prisma";
 import {filterMovie} from "@/lib/filter";
+import {ZVisibility} from "@/@types/models";
 
 export const registerMoviesRoutes = (app: HonoApp) => {
   const api = new Hono() as HonoApp;
@@ -18,6 +19,7 @@ const MovieBodySchema = z.object({
   description: z.string(),
   seriesId: z.string().optional(),
   contentUrl: z.string(),
+  visibility: ZVisibility.optional().default("PUBLIC"),
 });
 
 const registerPostIndexRoute = (app: HonoApp) => {
@@ -43,6 +45,7 @@ const registerPostIndexRoute = (app: HonoApp) => {
         contentUrl: data.contentUrl,
         authorId: user.id,
         seriesId: data.seriesId,
+        visibility: data.visibility,
       },
       include: {
         series: {

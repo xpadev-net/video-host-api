@@ -1,3 +1,5 @@
+import {z} from "zod";
+
 export type FilteredUser = {
   name: string,
   username: string,
@@ -18,3 +20,9 @@ export type FilteredMovie = {
   author: FilteredUser,
   series?: FilteredSeries | null,
 }
+
+export const ZVisibility = z.union([
+  z.literal("PUBLIC"),
+  z.literal("UNLISTED"),
+  z.literal("PRIVATE"),
+])

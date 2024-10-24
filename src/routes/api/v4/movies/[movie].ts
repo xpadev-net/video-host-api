@@ -3,6 +3,7 @@ import {prisma} from "@/lib/prisma";
 import {filterMovie} from "@/lib/filter";
 import {z} from "zod";
 import {zValidator} from "@hono/zod-validator";
+import {ZVisibility} from "@/@types/models";
 
 export const registerMovieRoute = (app: HonoApp) => {
   handleGet(app);
@@ -37,6 +38,17 @@ const handleGet = (app: HonoApp) => {
         message: "Movie not found"
       }, 404);
     }
+
+    if(movie.visibility === "PRIVATE") {
+      const user = c.get("user");
+      if (!user || user.id !== movie.authorId) {
+        return c.json({
+          status: "error",
+          message: "Movie not found"
+        }, 404);
+      }
+    }
+
     return c.json({
       status: "success",
       data: filterMovie(movie)
@@ -48,6 +60,7 @@ const MoviePatchSchema = z.object({
   title: z.string(),
   description: z.string(),
   seriesId: z.string().optional(),
+  visibility: ZVisibility.optional(),
 });
 
 const handlePatch = (app: HonoApp) => {
@@ -80,7 +93,7 @@ const handlePatch = (app: HonoApp) => {
         }, 404);
       }
     }
-    const {title, description, seriesId} = c.req.valid("json");
+    const {title, description, seriesId,visibility} = c.req.valid("json");
     const movie = await prisma.movie.update({
       where: {
         id: param
@@ -88,7 +101,8 @@ const handlePatch = (app: HonoApp) => {
       data: {
         title,
         description,
-        seriesId
+        seriesId,
+        visibility
       },
       include:{
         author: true,
