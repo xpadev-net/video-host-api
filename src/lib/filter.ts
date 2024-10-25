@@ -13,7 +13,7 @@ export const filterSeries = (series: FilteredSeries): FilteredSeries => {
     title: series.title,
     description: series.description,
     author: filterUser(series.author),
-    movies: series.movies.map(filterMovie),
+    movies: series.movies?.map(filterMovie),
   }
 }
 

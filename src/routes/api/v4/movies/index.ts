@@ -6,6 +6,8 @@ import {zValidator} from "@hono/zod-validator";
 import {prisma} from "@/lib/prisma";
 import {filterMovie} from "@/lib/filter";
 import {ZVisibility} from "@/@types/models";
+import {badRequest, unauthorized} from "@/utils/response";
+import {ok} from "@/utils/response/ok";
 
 export const registerMoviesRoutes = (app: HonoApp) => {
   const api = new Hono() as HonoApp;
@@ -26,17 +28,11 @@ const registerPostIndexRoute = (app: HonoApp) => {
   app.post("/",zValidator("json", MovieBodySchema), async(c) => {
     const user = c.get("user");
     if (!user) {
-      return c.json({
-        status: "error",
-        message: "Unauthorized",
-      }, 401);
+      return unauthorized(c, "Unauthorized");
     }
     const data = c.req.valid("json");
     if (!data) {
-      return c.json({
-        status: "error",
-        message: "Invalid data",
-      }, 400);
+      return badRequest(c, "Invalid data");
     }
     const movie = await prisma.movie.create({
       data: {
@@ -51,6 +47,11 @@ const registerPostIndexRoute = (app: HonoApp) => {
         series: {
           include: {
             author: true,
+            movies: {
+              include: {
+                author: true,
+              }
+            }
           }
         },
         author: true,
@@ -66,9 +67,6 @@ const registerPostIndexRoute = (app: HonoApp) => {
         }
       })
     }
-    return c.json({
-      status: "ok",
-      movie: filterMovie(movie),
-    });
+    return ok(c, filterMovie(movie));
   });
 }

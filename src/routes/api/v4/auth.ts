@@ -4,6 +4,8 @@ import {prisma} from "@/lib/prisma";
 import {HonoApp} from "@/@types/hono";
 import { isPasswordValid} from "@/lib/password";
 import {createSession} from "@/lib/session";
+import {unauthorized} from "@/utils/response";
+import {ok} from "@/utils/response/ok";
 
 const passwordAuthSchema = z.object({
   username: z.string(),
@@ -35,16 +37,10 @@ export const registerAuthRoute = (app: HonoApp) => {
         }
       });
       if(!session) {
-        return c.json({
-          status: "error",
-          message: "Invalid token",
-        }, 401);
+        return unauthorized(c, "Invalid token");
       }
       const newToken = await createSession(session.userId);
-      return c.json({
-        status: "ok",
-        token: newToken,
-      });
+      return ok(c, newToken);
     }
     const {username, password} = data;
     const user = await prisma.user.findFirst({
@@ -56,21 +52,12 @@ export const registerAuthRoute = (app: HonoApp) => {
       }
     });
     if(!user || !user.password) {
-      return c.json({
-        status: "error",
-        message: "Invalid username or password",
-      }, 401);
+      return unauthorized(c, "Invalid username or password");
     }
     if(!await isPasswordValid(password, user.password)) {
-      return c.json({
-        status: "error",
-        message: "Invalid username or password",
-      }, 401);
+      return unauthorized(c, "Invalid username or password");
     }
     const token = await createSession(user.id);
-    return c.json({
-      status: "ok",
-      token
-    });
+    return ok(c, token);
   });
 }

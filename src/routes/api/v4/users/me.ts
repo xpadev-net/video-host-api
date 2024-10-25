@@ -3,6 +3,8 @@ import {z} from "zod";
 import {zValidator} from "@hono/zod-validator";
 import {prisma} from "@/lib/prisma";
 import {filterUser} from "@/lib/filter";
+import {unauthorized} from "@/utils/response";
+import {ok} from "@/utils/response/ok";
 
 export const registerUsersMeRoute = (app: HonoApp) => {
   registerGet(app);
@@ -13,15 +15,9 @@ const registerGet = (app: HonoApp) => {
   app.get("/me", async(c) => {
     const user = c.get("user");
     if (!user){
-      return c.json({
-        status: "ok",
-        user: null
-      });
+      return ok(c, null);
     }
-    return c.json({
-      status: "ok",
-      user: filterUser(user)
-    });
+    return ok(c, filterUser(user));
   });
 }
 
@@ -33,13 +29,10 @@ const registerPatch = (app: HonoApp) => {
   app.patch("/me",zValidator("json",PatchSchema), async(c) => {
     const user = c.get("user");
     if (!user){
-      return c.json({
-        status: "error",
-        message: "Not logged in"
-      }, 401);
+      return unauthorized(c, "Not logged in");
     }
     const {name} = c.req.valid("json");
-    await prisma.user.update({
+    const newUser = await prisma.user.update({
       where: {
         id: user.id
       },
@@ -47,9 +40,6 @@ const registerPatch = (app: HonoApp) => {
         name
       }
     });
-    return c.json({
-      status: "ok",
-      message: "Name updated"
-    });
+    return ok(c, newUser);
   });
 }

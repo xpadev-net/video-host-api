@@ -6,6 +6,8 @@ import {zValidator} from "@hono/zod-validator";
 import {prisma} from "@/lib/prisma";
 import {filterSeries} from "@/lib/filter";
 import {ZVisibility} from "@/@types/models";
+import {unauthorized} from "@/utils/response";
+import {ok} from "@/utils/response/ok";
 
 export const registerSeriesRoutes = (app: HonoApp) => {
   const api = new Hono() as HonoApp;
@@ -54,10 +56,7 @@ const registerPostIndexRoute = (app: HonoApp) => {
   app.post("/", zValidator("json", PostSeriesSchema), async(c) => {
     const user = c.get("user");
     if (!user) {
-      return c.json({
-        status: "error",
-        message: "Unauthorized",
-      }, 401);
+      return unauthorized(c, "Unauthorized");
     }
     const {title,description,visibility} = c.req.valid("json");
     const series = await prisma.series.create({
@@ -69,11 +68,13 @@ const registerPostIndexRoute = (app: HonoApp) => {
       },
       include: {
         author: true,
+        movies:{
+          include:{
+            author: true,
+          }
+        }
       }
     });
-    return c.json({
-      status: "ok",
-      series: filterSeries(series),
-    });
+    return ok(c, filterSeries(series));
   });
 }

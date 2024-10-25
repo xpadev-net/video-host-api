@@ -4,6 +4,8 @@ import {filterSeries} from "@/lib/filter";
 import {z} from "zod";
 import {zValidator} from "@hono/zod-validator";
 import {ZVisibility} from "@/@types/models";
+import {notFound, unauthorized} from "@/utils/response";
+import {ok} from "@/utils/response/ok";
 
 export const registerSeriesRoute = (app: HonoApp) => {
   handleGet(app);
@@ -14,10 +16,7 @@ const handleGet = (app: HonoApp) => {
   app.get("/:series", async(c) => {
     const seriesId = c.req.param("series");
     if (!seriesId) {
-      return c.json({
-        status: "error",
-        message: "Series not found",
-      }, 404);
+      return notFound(c, "Series not found");
     }
     const series = await prisma.series.findFirst({
       where: {
@@ -36,26 +35,17 @@ const handleGet = (app: HonoApp) => {
       }
     });
     if (!series) {
-      return c.json({
-        status: "error",
-        message: "Series not found",
-      }, 404);
+      return notFound(c, "Series not found");
     }
 
     if(series.visibility === "PRIVATE") {
       const user = c.get("user");
       if (!user || (user.id !== series.authorId && user.role !== "ADMIN")) {
-        return c.json({
-          status: "error",
-          message: "Series not found",
-        }, 404);
+        return notFound(c, "Series not found");
       }
     }
 
-    return c.json({
-      status: "ok",
-      series: filterSeries(series),
-    });
+    return ok(c, filterSeries(series))
   });
 }
 
@@ -69,17 +59,11 @@ const handlePatch = (app: HonoApp) => {
   app.patch("/:series", zValidator("json", PatchSchema), async(c) => {
     const user = c.get("user");
     if (!user) {
-      return c.json({
-        status: "error",
-        message: "Unauthorized",
-      }, 401);
+      return unauthorized(c, "Unauthorized");
     }
     const param = c.req.param("series");
     if (!param) {
-      return c.json({
-        status: "error",
-        message: "Series not found",
-      }, 404);
+      return notFound(c, "Series not found");
     }
     {
       const series = await prisma.series.findUnique({
@@ -89,10 +73,7 @@ const handlePatch = (app: HonoApp) => {
         },
       });
       if (!series) {
-        return c.json({
-          status: "error",
-          message: "Series not found",
-        }, 404);
+        return notFound(c, "Series not found");
       }
     }
     const {title, description,visibility} = c.req.valid("json");
@@ -118,9 +99,6 @@ const handlePatch = (app: HonoApp) => {
         }
       }
     });
-    return c.json({
-      status: "ok",
-      series: filterSeries(series),
-    });
+    return ok(c, filterSeries(series))
   });
 }

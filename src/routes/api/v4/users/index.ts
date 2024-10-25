@@ -9,6 +9,9 @@ import {prisma} from "@/lib/prisma";
 import {hashPassword} from "@/lib/password";
 import {createSession} from "@/lib/session";
 import {filterUser} from "@/lib/filter";
+import {forbidden} from "@/utils/response/forbidden";
+import {badRequest} from "@/utils/response";
+import {ok} from "@/utils/response/ok";
 
 export const registerUsersRoute = (app: HonoApp) => {
   const api = new Hono() as HonoApp;
@@ -28,17 +31,11 @@ const SignupBodySchema = z.object({
 const registerPostIndexRoute = (app: HonoApp) => {
   app.post("/", zValidator("json",SignupBodySchema),async(c) => {
     if (!SIGNUP_ENABLED) {
-      return c.json({
-        status: "error",
-        message: "Signup is disabled"
-      }, 403);
+      return forbidden(c, "Signup is disabled");
     }
     const {username, name, password, signupCode} = c.req.valid("json");
     if (SIGNUP_CODE != undefined && SIGNUP_CODE != signupCode){
-      return c.json({
-        status: "error",
-        message: "Invalid signup code"
-      }, 403);
+      return forbidden(c, "Invalid signup code");
     }
     try{
       const user = await prisma.user.create({
@@ -49,16 +46,12 @@ const registerPostIndexRoute = (app: HonoApp) => {
         }
       });
       const token = await createSession(user.id);
-      return c.json({
-        status: "ok",
+      return ok(c, {
         user: filterUser(user),
-        token
-      });
+        token,
+      })
     }catch(e){
-      return c.json({
-        status: "error",
-        message: "Username already exists"
-      }, 400);
+      return badRequest(c, "Username already exists");
     }
   });
 }

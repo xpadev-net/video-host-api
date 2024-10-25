@@ -2,6 +2,7 @@ import {prisma} from "@/lib/prisma";
 import {PUBLIC_ENDPOINTS} from "@/env";
 import {createMiddleware} from "hono/factory";
 import {HonoApp} from "@/@types/hono";
+import {unauthorized} from "@/utils/response";
 
 export const handleAuth = (app: HonoApp) => {
   app.use("/*", authMiddleware);
@@ -23,10 +24,7 @@ const authMiddleware = createMiddleware<{
       await next();
       return;
     }
-    return c.json({
-      status: "error",
-      message: "Unauthorized"
-    }, 401);
+    return unauthorized(c, "Unauthorized");
   }
   const session = await prisma.session.findFirst({
     where: {
@@ -37,10 +35,7 @@ const authMiddleware = createMiddleware<{
     }
   })
   if (!session){
-    return c.json({
-      status: "error",
-      message: "Unauthorized"
-    }, 401);
+    return unauthorized(c, "Unauthorized");
   }
   c.set("user", session.user);
   await next();
