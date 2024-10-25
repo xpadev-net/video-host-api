@@ -51,7 +51,10 @@ const handleGet = (app: HonoApp) => {
 
     return c.json({
       status: "success",
-      data: filterMovie(movie)
+      data: {
+        ...filterMovie(movie),
+        isOwner: c.get("user")?.id === movie.authorId
+      }
     });
   });
 }

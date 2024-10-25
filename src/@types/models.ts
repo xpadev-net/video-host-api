@@ -17,6 +17,7 @@ export type FilteredMovie = {
   title: string,
   description?: string | null,
   contentUrl: string,
+  thumbnailUrl?: string | null,
   author: FilteredUser,
   series?: FilteredSeries | null,
 }
