@@ -10,16 +10,19 @@ export type FilteredSeries = {
   title: string,
   description?: string | null,
   author: FilteredUser,
+  movies: FilteredMovie[],
 }
 
 export type FilteredMovie = {
   id: string,
   title: string,
   description?: string | null,
+  duration: number,
   contentUrl: string,
   thumbnailUrl?: string | null,
   author: FilteredUser,
   series?: FilteredSeries | null,
+  createdAt: Date,
 }
 
 export const ZVisibility = z.union([

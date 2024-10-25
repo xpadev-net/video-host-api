@@ -25,6 +25,14 @@ const handleGet = (app: HonoApp) => {
       },
       include: {
         author: true,
+        movies: {
+          orderBy: {
+            createdAt: "asc",
+          },
+          include:{
+            author: true,
+          }
+        }
       }
     });
     if (!series) {
@@ -100,6 +108,14 @@ const handlePatch = (app: HonoApp) => {
       },
       include: {
         author: true,
+        movies: {
+          orderBy: {
+            createdAt: "asc",
+          },
+          include: {
+            author: true,
+          }
+        }
       }
     });
     return c.json({
