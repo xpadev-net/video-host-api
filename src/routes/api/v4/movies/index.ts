@@ -48,6 +48,9 @@ const registerPostIndexRoute = (app: HonoApp) => {
           include: {
             author: true,
             movies: {
+              orderBy: {
+                createdAt: "asc"
+              },
               include: {
                 author: true,
               }

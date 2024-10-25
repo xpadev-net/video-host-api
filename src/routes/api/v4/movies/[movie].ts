@@ -28,6 +28,9 @@ const handleGet = (app: HonoApp) => {
           include: {
             author: true,
             movies: {
+              orderBy: {
+                createdAt: "asc"
+              },
               include: {
                 author: true
               }
@@ -99,6 +102,9 @@ const handlePatch = (app: HonoApp) => {
           include: {
             author: true,
             movies: {
+              orderBy: {
+                createdAt: "asc"
+              },
               include: {
                 author: true
               }
