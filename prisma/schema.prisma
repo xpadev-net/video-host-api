@@ -24,6 +24,7 @@ model User {
   username  String    @unique
   password  String? // if null, it means the user is using by system
   role      Role      @default(USER)
+  avatarUrl String?
   Series    Series[]
   Movie     Movie[]
   note      String?
