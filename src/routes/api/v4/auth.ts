@@ -60,4 +60,17 @@ export const registerAuthRoute = (app: HonoApp) => {
     const token = await createSession(user.id);
     return ok(c, token);
   });
+
+  app.delete("/auth", zValidator("json",tokenAuthSchema), async(c) => {
+    const token = c.req.valid("json").token;
+    if (!token){
+      return unauthorized(c, "Not logged in");
+    }
+    await prisma.session.deleteMany({
+      where: {
+        token
+      }
+    });
+    return ok(c, null);
+  });
 }
