@@ -12,7 +12,7 @@ export type FilteredSeries = {
   description?: string | null,
   visibility: Visibility,
   author: FilteredUser,
-  movies: FilteredMovie[],
+  movies?: FilteredMovie[],
 }
 
 export type FilteredMovie = {

@@ -8,12 +8,61 @@ import {filterMovie} from "@/lib/filter";
 import {ZVisibility} from "@/@types/models";
 import {badRequest, unauthorized} from "@/utils/response";
 import {ok} from "@/utils/response/ok";
+import type {Prisma} from "@prisma/client";
 
 export const registerMoviesRoutes = (app: HonoApp) => {
   const api = new Hono() as HonoApp;
   registerMovieRoute(api);
+  registerGetIndexRoute(api);
   registerPostIndexRoute(api);
   app.route("/movies", api);
+}
+
+const PAGE_SIZE = 100;
+
+const registerGetIndexRoute = (app: HonoApp) => {
+  app.get("/", async(c) => {
+    const page = c.req.queries("page");
+    const query = c.req.queries("query");
+    if ((page && page.length > 1) || (query && query.length > 1)) {
+      return badRequest(c, "Invalid page");
+    }
+    const where: Prisma.MovieWhereInput = {
+      visibility: "PUBLIC",
+    }
+    if (query?.[0]) {
+      where.OR = [
+        {
+          title: {
+            contains: query[0],
+          }
+        },
+        {
+          description: {
+            contains: query[0],
+          }
+        }
+      ]
+    }
+
+    const movies = await prisma.movie.findMany({
+      where,
+      include: {
+        author: true,
+        series: {
+          include:{
+            author: true,
+          }
+        }
+      },
+      orderBy: {
+        createdAt: "desc"
+      },
+      take: PAGE_SIZE,
+      skip: page ? (parseInt(page[0]) - 1) * PAGE_SIZE : 0,
+    });
+    return ok(c, movies.map(filterMovie));
+  });
 }
 
 const MovieBodySchema = z.object({

@@ -6,8 +6,9 @@ import {zValidator} from "@hono/zod-validator";
 import {prisma} from "@/lib/prisma";
 import {filterSeries} from "@/lib/filter";
 import {ZVisibility} from "@/@types/models";
-import {unauthorized} from "@/utils/response";
+import {badRequest, unauthorized} from "@/utils/response";
 import {ok} from "@/utils/response/ok";
+import {Prisma} from "@prisma/client";
 
 export const registerSeriesRoutes = (app: HonoApp) => {
   const api = new Hono() as HonoApp;
@@ -17,10 +18,40 @@ export const registerSeriesRoutes = (app: HonoApp) => {
   app.route("/series", api);
 }
 
+const PAGE_SIZE = 100;
+
 const registerGetIndexRoute = (app: HonoApp) => {
   app.get("/", async(c) => {
+    const page = c.req.queries("page");
+    const query = c.req.queries("query");
+    const suggest = (c.req.queries("suggest")?.length??0) > 0;
+    if ((page && page.length > 1 )|| (query && query.length > 1)) {
+      return badRequest(c, "Invalid page");
+    }
+
+    const where: Prisma.SeriesWhereInput = {
+      visibility: "PUBLIC",
+    }
+
+    if (query?.[0]) {
+      where.OR = [
+        {
+          title: {
+            contains: query[0],
+          }
+        },
+        {
+          description: {
+            contains: query[0],
+          }
+        }
+      ]
+    }
+
     const series = await prisma.series.findMany({
-      include: {
+      include: suggest ? {
+        author: true,
+      } : {
         movies: {
           orderBy: {
             createdAt: "desc",
@@ -32,17 +63,14 @@ const registerGetIndexRoute = (app: HonoApp) => {
         },
         author: true,
       },
-      where:{
-        visibility: "PUBLIC",
-      },
+      where,
       orderBy:{
         updatedAt: "desc",
-      }
+      },
+      take: PAGE_SIZE,
+      skip: page ? (parseInt(page[0]) - 1) * PAGE_SIZE : 0,
     });
-    return c.json({
-      status: "ok",
-      series: series.map(filterSeries),
-    })
+    return ok(c, series.map(filterSeries));
   });
 }
 
