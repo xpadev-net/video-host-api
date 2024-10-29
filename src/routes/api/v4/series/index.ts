@@ -25,7 +25,8 @@ const registerGetIndexRoute = (app: HonoApp) => {
     const page = c.req.queries("page");
     const query = c.req.queries("query");
     const suggest = (c.req.queries("suggest")?.length??0) > 0;
-    if ((page && page.length > 1 )|| (query && query.length > 1)) {
+    const author = c.req.queries("author");
+    if ((page && page.length > 1 )|| (query && query.length > 1) || (author && author.length > 1)) {
       return badRequest(c, "Invalid page");
     }
 
@@ -46,6 +47,10 @@ const registerGetIndexRoute = (app: HonoApp) => {
           }
         }
       ]
+    }
+
+    if (author?.[0]) {
+      where.authorId = author[0];
     }
 
     const series = await prisma.series.findMany({

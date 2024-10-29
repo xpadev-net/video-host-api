@@ -24,7 +24,8 @@ const registerGetIndexRoute = (app: HonoApp) => {
   app.get("/", async(c) => {
     const page = c.req.queries("page");
     const query = c.req.queries("query");
-    if ((page && page.length > 1) || (query && query.length > 1)) {
+    const author = c.req.queries("author");
+    if ((page && page.length > 1) || (query && query.length > 1) || (author && author.length > 1)) {
       return badRequest(c, "Invalid page");
     }
     const where: Prisma.MovieWhereInput = {
@@ -43,6 +44,10 @@ const registerGetIndexRoute = (app: HonoApp) => {
           }
         }
       ]
+    }
+
+    if (author?.[0]) {
+      where.authorId = author[0];
     }
 
     const movies = await prisma.movie.findMany({
