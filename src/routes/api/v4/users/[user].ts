@@ -12,7 +12,7 @@ export const registerUsersDetailsRoute = (app: HonoApp) => {
     }
     const user = await prisma.user.findUnique({
       where: {
-        username: userId
+        id: userId
       }
     });
     if (!user){
