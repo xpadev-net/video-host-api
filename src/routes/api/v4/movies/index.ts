@@ -8,7 +8,7 @@ import {filterMovie} from "@/lib/filter";
 import {ZVisibility} from "@/@types/models";
 import {badRequest, unauthorized} from "@/utils/response";
 import {ok} from "@/utils/response/ok";
-import type {Prisma} from "@prisma/client";
+import {buildVisibilityFilter} from "@/utils/buildVisibilityFilter";
 
 export const registerMoviesRoutes = (app: HonoApp) => {
   const api = new Hono() as HonoApp;
@@ -23,32 +23,10 @@ const PAGE_SIZE = 100;
 const registerGetIndexRoute = (app: HonoApp) => {
   app.get("/", async(c) => {
     const page = c.req.queries("page");
-    const query = c.req.queries("query");
-    const author = c.req.queries("author");
-    if ((page && page.length > 1) || (query && query.length > 1) || (author && author.length > 1)) {
-      return badRequest(c, "Invalid page");
-    }
-    const where: Prisma.MovieWhereInput = {
-      visibility: "PUBLIC",
-    }
-    if (query?.[0]) {
-      where.OR = [
-        {
-          title: {
-            contains: query[0],
-          }
-        },
-        {
-          description: {
-            contains: query[0],
-          }
-        }
-      ]
-    }
+    const query = c.req.queries("query")?.[0];
+    const author = c.req.queries("author")?.[0];
 
-    if (author?.[0]) {
-      where.authorId = author[0];
-    }
+    const where = buildVisibilityFilter(c.get("user"), query, author);
 
     const movies = await prisma.movie.findMany({
       where,

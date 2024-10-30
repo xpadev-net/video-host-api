@@ -9,6 +9,7 @@ import {ZVisibility} from "@/@types/models";
 import {badRequest, unauthorized} from "@/utils/response";
 import {ok} from "@/utils/response/ok";
 import {Prisma} from "@prisma/client";
+import {buildVisibilityFilter} from "@/utils/buildVisibilityFilter";
 
 export const registerSeriesRoutes = (app: HonoApp) => {
   const api = new Hono() as HonoApp;
@@ -22,36 +23,12 @@ const PAGE_SIZE = 100;
 
 const registerGetIndexRoute = (app: HonoApp) => {
   app.get("/", async(c) => {
-    const page = c.req.queries("page");
-    const query = c.req.queries("query");
+    const page = parseInt(c.req.queries("page")?.[0]??"1") - 1;
+    const query = c.req.queries("query")?.[0];
     const suggest = (c.req.queries("suggest")?.length??0) > 0;
-    const author = c.req.queries("author");
-    if ((page && page.length > 1 )|| (query && query.length > 1) || (author && author.length > 1)) {
-      return badRequest(c, "Invalid page");
-    }
+    const author = c.req.queries("author")?.[0];
 
-    const where: Prisma.SeriesWhereInput = {
-      visibility: "PUBLIC",
-    }
-
-    if (query?.[0]) {
-      where.OR = [
-        {
-          title: {
-            contains: query[0],
-          }
-        },
-        {
-          description: {
-            contains: query[0],
-          }
-        }
-      ]
-    }
-
-    if (author?.[0]) {
-      where.authorId = author[0];
-    }
+    const where: Prisma.SeriesWhereInput = buildVisibilityFilter(c.get("user"), query, author);
 
     const series = await prisma.series.findMany({
       include: suggest ? {
@@ -73,7 +50,7 @@ const registerGetIndexRoute = (app: HonoApp) => {
         updatedAt: "desc",
       },
       take: PAGE_SIZE,
-      skip: page ? (parseInt(page[0]) - 1) * PAGE_SIZE : 0,
+      skip: page * PAGE_SIZE,
     });
     return ok(c, series.map(filterSeries));
   });
