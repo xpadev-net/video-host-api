@@ -1,5 +1,5 @@
 {
-  "name": "anime-sv-api",
+  "name": "video-host-api",
   "scripts": {
     "dev": "tsx watch src/index.ts"
   },
