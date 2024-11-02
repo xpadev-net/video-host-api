@@ -45,6 +45,7 @@ const registerGetIndexRoute = (app: HonoApp) => {
         },
         author: true,
       },
+      distinct: suggest ? ["title"] : undefined,
       where,
       orderBy:{
         updatedAt: "desc",
