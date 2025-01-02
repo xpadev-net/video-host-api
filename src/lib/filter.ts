@@ -1,4 +1,4 @@
-import {FilteredMovie, FilteredSeries, FilteredUser} from "@/@types/models";
+import {FilteredMovie, FilteredMovieVariant, FilteredSeries, FilteredUser} from "@/@types/models";
 
 export const filterUser = (user: FilteredUser): FilteredUser => {
   return {
@@ -25,11 +25,18 @@ export const filterMovie = (episode: FilteredMovie): FilteredMovie => {
     title: episode.title,
     description: episode.description,
     duration: episode.duration,
-    contentUrl: episode.contentUrl,
+    variants: episode.variants.map(filterMovieVariant),
     thumbnailUrl: episode.thumbnailUrl,
     visibility: episode.visibility,
     author: filterUser(episode.author),
     series: episode.series ? filterSeries(episode.series) : undefined,
     createdAt: episode.createdAt,
+  }
+}
+
+export const filterMovieVariant = (variant: FilteredMovieVariant): FilteredMovieVariant => {
+  return {
+    variantId: variant.variantId,
+    contentUrl: variant.contentUrl,
   }
 }

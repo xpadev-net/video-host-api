@@ -32,11 +32,13 @@ const handleGet = (app: HonoApp) => {
                 createdAt: "asc"
               },
               include: {
-                author: true
+                author: true,
+                variants: true,
               }
             }
           }
-        }
+        },
+        variants: true,
       }
     });
     if (!movie) {
@@ -106,11 +108,13 @@ const handlePatch = (app: HonoApp) => {
                 createdAt: "asc"
               },
               include: {
-                author: true
+                author: true,
+                variants: true,
               }
             }
           }
-        }
+        },
+        variants: true,
       }
     });
     return ok(c,filterMovie(movie));
