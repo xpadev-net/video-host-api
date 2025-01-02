@@ -25,13 +25,13 @@ model User {
   password  String? // if null, it means the user is using by system
   role      Role       @default(USER)
   avatarUrl String?
-  Series    Series[]
-  Movie     Movie[]
+  series    Series[]
+  movies    Movie[]
   note      String?
-  Session   Session[]
+  sessions  Session[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
-  Playlist  Playlist[]
+  playlists Playlist[]
 }
 
 model Session {
@@ -60,16 +60,16 @@ model Series {
 }
 
 model Playlist {
-  id              String            @id @default(uuid())
-  title           String
-  description     String?
-  author          User              @relation(fields: [authorId], references: [id])
-  authorId        String
-  visibility      Visibility        @default(PUBLIC)
-  note            String?
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  MovieOnPlaylist MovieOnPlaylist[]
+  id          String            @id @default(uuid())
+  title       String
+  description String?
+  author      User              @relation(fields: [authorId], references: [id])
+  authorId    String
+  visibility  Visibility        @default(PUBLIC)
+  note        String?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  movies      MovieOnPlaylist[]
 }
 
 model MovieOnPlaylist {
@@ -83,21 +83,21 @@ model MovieOnPlaylist {
 }
 
 model Movie {
-  id              String            @id @default(uuid())
-  title           String
-  description     String?
-  author          User              @relation(fields: [authorId], references: [id])
-  authorId        String
-  series          Series?           @relation(fields: [seriesId], references: [id])
-  seriesId        String?
-  duration        Int               @default(0)
-  thumbnailUrl    String?
-  visibility      Visibility        @default(PUBLIC)
-  note            String?
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  MovieVariant    MovieVariant[]
-  MovieOnPlaylist MovieOnPlaylist[]
+  id           String            @id @default(uuid())
+  title        String
+  description  String?
+  author       User              @relation(fields: [authorId], references: [id])
+  authorId     String
+  series       Series?           @relation(fields: [seriesId], references: [id])
+  seriesId     String?
+  duration     Int               @default(0)
+  thumbnailUrl String?
+  visibility   Visibility        @default(PUBLIC)
+  note         String?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  variants     MovieVariant[]
+  playlists    MovieOnPlaylist[]
 }
 
 model MovieVariant {
