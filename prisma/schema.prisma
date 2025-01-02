@@ -19,18 +19,19 @@ enum Role {
 }
 
 model User {
-  id        String    @id @default(uuid())
+  id        String     @id @default(uuid())
   name      String
-  username  String    @unique
+  username  String     @unique
   password  String? // if null, it means the user is using by system
-  role      Role      @default(USER)
+  role      Role       @default(USER)
   avatarUrl String?
   Series    Series[]
   Movie     Movie[]
   note      String?
   Session   Session[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  Playlist  Playlist[]
 }
 
 model Session {
@@ -58,19 +59,54 @@ model Series {
   updatedAt   DateTime   @updatedAt
 }
 
+model Playlist {
+  id              String            @id @default(uuid())
+  title           String
+  description     String?
+  author          User              @relation(fields: [authorId], references: [id])
+  authorId        String
+  visibility      Visibility        @default(PUBLIC)
+  note            String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  MovieOnPlaylist MovieOnPlaylist[]
+}
+
+model MovieOnPlaylist {
+  playlist   Playlist @relation(fields: [playlistId], references: [id])
+  playlistId String
+  movie      Movie    @relation(fields: [movieId], references: [id])
+  movieId    String
+  order      Int
+
+  @@id([playlistId, movieId])
+}
+
 model Movie {
-  id           String     @id @default(uuid())
-  title        String
-  description  String?
-  author       User       @relation(fields: [authorId], references: [id])
-  authorId     String
-  series       Series?    @relation(fields: [seriesId], references: [id])
-  seriesId     String?
-  duration     Int        @default(0)
-  contentUrl   String
-  thumbnailUrl String?
-  visibility   Visibility @default(PUBLIC)
-  note         String?
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  id              String            @id @default(uuid())
+  title           String
+  description     String?
+  author          User              @relation(fields: [authorId], references: [id])
+  authorId        String
+  series          Series?           @relation(fields: [seriesId], references: [id])
+  seriesId        String?
+  duration        Int               @default(0)
+  thumbnailUrl    String?
+  visibility      Visibility        @default(PUBLIC)
+  note            String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  MovieVariant    MovieVariant[]
+  MovieOnPlaylist MovieOnPlaylist[]
+}
+
+model MovieVariant {
+  id         String   @id @default(uuid())
+  movie      Movie    @relation(fields: [movieId], references: [id])
+  movieId    String
+  variantId  String
+  contentUrl String
+  note       String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
