@@ -1,19 +1,19 @@
-import {HonoApp} from "@/@types/hono";
-import {prisma} from "@/lib/prisma";
-import {filterSeries} from "@/lib/filter";
-import {z} from "zod";
-import {zValidator} from "@hono/zod-validator";
-import {ZVisibility} from "@/@types/models";
-import {notFound, unauthorized} from "@/utils/response";
-import {ok} from "@/utils/response/ok";
+import { HonoApp } from "@/@types/hono";
+import { prisma } from "@/lib/prisma";
+import { filterSeries } from "@/lib/filter";
+import { z } from "zod";
+import { zValidator } from "@hono/zod-validator";
+import { ZVisibility } from "@/@types/models";
+import { notFound, unauthorized } from "@/utils/response";
+import { ok } from "@/utils/response/ok";
 
 export const registerSeriesRoute = (app: HonoApp) => {
   handleGet(app);
   handlePatch(app);
-}
+};
 
 const handleGet = (app: HonoApp) => {
-  app.get("/:series", async(c) => {
+  app.get("/:series", async (c) => {
     const seriesId = c.req.param("series");
     if (!seriesId) {
       return notFound(c, "Series not found");
@@ -28,26 +28,27 @@ const handleGet = (app: HonoApp) => {
           orderBy: {
             createdAt: "asc",
           },
-          include:{
+          include: {
             author: true,
-          }
-        }
-      }
+            variants: true,
+          },
+        },
+      },
     });
     if (!series) {
       return notFound(c, "Series not found");
     }
 
-    if(series.visibility === "PRIVATE") {
+    if (series.visibility === "PRIVATE") {
       const user = c.get("user");
       if (!user || (user.id !== series.authorId && user.role !== "ADMIN")) {
         return notFound(c, "Series not found");
       }
     }
 
-    return ok(c, filterSeries(series))
+    return ok(c, filterSeries(series));
   });
-}
+};
 
 const PatchSchema = z.object({
   title: z.string(),
@@ -56,7 +57,7 @@ const PatchSchema = z.object({
 });
 
 const handlePatch = (app: HonoApp) => {
-  app.patch("/:series", zValidator("json", PatchSchema), async(c) => {
+  app.patch("/:series", zValidator("json", PatchSchema), async (c) => {
     const user = c.get("user");
     if (!user) {
       return unauthorized(c, "Unauthorized");
@@ -76,7 +77,7 @@ const handlePatch = (app: HonoApp) => {
         return notFound(c, "Series not found");
       }
     }
-    const {title, description,visibility} = c.req.valid("json");
+    const { title, description, visibility } = c.req.valid("json");
     const series = await prisma.series.update({
       where: {
         id: param,
@@ -95,10 +96,11 @@ const handlePatch = (app: HonoApp) => {
           },
           include: {
             author: true,
-          }
-        }
-      }
+            variants: true,
+          },
+        },
+      },
     });
-    return ok(c, filterSeries(series))
+    return ok(c, filterSeries(series));
   });
-}
+};
