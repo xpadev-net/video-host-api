@@ -47,6 +47,7 @@ const registerGetIndexRoute = (app: HonoApp) => {
               take: 10,
               include: {
                 author: true,
+                variants: true,
               },
             },
             author: true,
