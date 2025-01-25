@@ -1,14 +1,14 @@
-import {HonoApp} from "@/@types/hono";
-import {Hono} from "hono";
-import {registerMovieRoute} from "@/routes/api/v4/movies/[movie]";
-import {z} from "zod";
-import {zValidator} from "@hono/zod-validator";
-import {prisma} from "@/lib/prisma";
-import {filterMovie} from "@/lib/filter";
-import {ZVisibility} from "@/@types/models";
-import {badRequest, unauthorized} from "@/utils/response";
-import {ok} from "@/utils/response/ok";
-import {buildVisibilityFilter} from "@/utils/buildVisibilityFilter";
+import { HonoApp } from "@/@types/hono";
+import { Hono } from "hono";
+import { registerMovieRoute } from "@/routes/api/v4/movies/[movie]";
+import { z } from "zod";
+import { zValidator } from "@hono/zod-validator";
+import { prisma } from "@/lib/prisma";
+import { filterMovie } from "@/lib/filter";
+import { ZVisibility } from "@/@types/models";
+import { badRequest, unauthorized } from "@/utils/response";
+import { ok } from "@/utils/response/ok";
+import { buildVisibilityFilter } from "@/utils/buildVisibilityFilter";
 
 export const registerMoviesRoutes = (app: HonoApp) => {
   const api = new Hono() as HonoApp;
@@ -16,12 +16,12 @@ export const registerMoviesRoutes = (app: HonoApp) => {
   registerGetIndexRoute(api);
   registerPostIndexRoute(api);
   app.route("/movies", api);
-}
+};
 
 const PAGE_SIZE = 100;
 
 const registerGetIndexRoute = (app: HonoApp) => {
-  app.get("/", async(c) => {
+  app.get("/", async (c) => {
     const page = c.req.queries("page");
     const query = c.req.queries("query")?.[0];
     const author = c.req.queries("author")?.[0];
@@ -33,20 +33,21 @@ const registerGetIndexRoute = (app: HonoApp) => {
       include: {
         author: true,
         series: {
-          include:{
+          include: {
             author: true,
-          }
-        }
+          },
+        },
+        variants: true,
       },
       orderBy: {
-        createdAt: "desc"
+        createdAt: "desc",
       },
       take: PAGE_SIZE,
       skip: page ? (parseInt(page[0]) - 1) * PAGE_SIZE : 0,
     });
     return ok(c, movies.map(filterMovie));
   });
-}
+};
 
 const MovieBodySchema = z.object({
   title: z.string(),
@@ -57,7 +58,7 @@ const MovieBodySchema = z.object({
 });
 
 const registerPostIndexRoute = (app: HonoApp) => {
-  app.post("/",zValidator("json", MovieBodySchema), async(c) => {
+  app.post("/", zValidator("json", MovieBodySchema), async (c) => {
     const user = c.get("user");
     if (!user) {
       return unauthorized(c, "Unauthorized");
@@ -70,7 +71,6 @@ const registerPostIndexRoute = (app: HonoApp) => {
       data: {
         title: data.title,
         description: data.description,
-        contentUrl: data.contentUrl,
         authorId: user.id,
         seriesId: data.seriesId,
         visibility: data.visibility,
@@ -81,27 +81,29 @@ const registerPostIndexRoute = (app: HonoApp) => {
             author: true,
             movies: {
               orderBy: {
-                createdAt: "asc"
+                createdAt: "asc",
               },
               include: {
                 author: true,
-              }
-            }
-          }
+                variants: true,
+              },
+            },
+          },
         },
         author: true,
-      }
+        variants: true,
+      },
     });
-    if (data.seriesId){
+    if (data.seriesId) {
       await prisma.series.update({
         where: {
           id: data.seriesId,
         },
         data: {
           updatedAt: new Date(),
-        }
-      })
+        },
+      });
     }
     return ok(c, filterMovie(movie));
   });
-}
+};
