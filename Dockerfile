@@ -5,8 +5,9 @@ FROM --platform=linux/amd64 node:$NODE_VERSION AS builder
 WORKDIR /app
 
 COPY package.json pnpm-lock.yaml ./
-RUN npm install -g pnpm
-RUN pnpm install --frozen-lockfile
+RUN npm install -g pnpm \
+	&& pnpm approve-builds @prisma/client @prisma/engines bcrypt esbuild prisma \
+	&& pnpm install --frozen-lockfile
 
 # Prepare node_modules
 COPY ./ ./
