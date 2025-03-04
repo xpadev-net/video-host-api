@@ -6,8 +6,8 @@ WORKDIR /app
 
 COPY package.json pnpm-lock.yaml ./
 RUN npm install -g pnpm \
-	&& pnpm approve-builds @prisma/client @prisma/engines bcrypt esbuild prisma \
-	&& pnpm install --frozen-lockfile
+	&& pnpm install --frozen-lockfile \
+	&& pnpm approve-builds @prisma/client @prisma/engines bcrypt esbuild prisma 
 
 # Prepare node_modules
 COPY ./ ./
