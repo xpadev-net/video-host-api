@@ -1,6 +1,6 @@
 {
   "name": "video-host-api",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "run": "tsx src/index.ts"
