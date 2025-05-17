@@ -46,8 +46,8 @@ model Session {
 
 model Series {
   id          String     @id @default(uuid())
-  title       String
-  description String?
+  title       String     @db.VarChar(512)
+  description String?    @db.Text
   author      User       @relation(fields: [authorId], references: [id])
   authorId    String
   movies      Movie[]
@@ -59,8 +59,8 @@ model Series {
 
 model Playlist {
   id          String            @id @default(uuid())
-  title       String
-  description String?
+  title       String            @db.VarChar(512)
+  description String?           @db.Text
   author      User              @relation(fields: [authorId], references: [id])
   authorId    String
   visibility  Visibility        @default(PUBLIC)
@@ -81,8 +81,8 @@ model MovieOnPlaylist {
 
 model Movie {
   id           String            @id @default(uuid())
-  title        String
-  description  String?
+  title        String            @db.VarChar(512)
+  description  String?           @db.Text
   author       User              @relation(fields: [authorId], references: [id])
   authorId     String
   series       Series?           @relation(fields: [seriesId], references: [id])
