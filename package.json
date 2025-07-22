@@ -18,8 +18,15 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.1.2",
     "@types/bcrypt": "^5.0.2",
     "@types/node": "^20.11.17",
+    "lefthook": "^1.12.2",
     "tsx": "^4.7.1"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "lefthook"
+    ]
   }
 }
