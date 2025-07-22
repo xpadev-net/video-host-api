@@ -43,40 +43,28 @@ const registerGetIndexRoute = (app: HonoApp) => {
       author,
     );
 
-    // For suggest mode, return simple format without pagination (backward compatibility)
-    if (suggest) {
-      const series = await prisma.series.findMany({
-        include: {
-          author: true,
-        },
-        distinct: ["title"],
-        where,
-        orderBy: {
-          updatedAt: "desc",
-        },
-        take: limit,
-        skip: (page - 1) * limit,
-      });
-      return ok(c, series.map(filterSeries));
-    }
-
     // Get total count for pagination metadata
     const totalCount = await prisma.series.count({ where });
 
     const series = await prisma.series.findMany({
-      include: {
-        movies: {
-          orderBy: {
-            createdAt: "desc",
-          },
-          take: 10,
-          include: {
+      include: suggest
+        ? {
             author: true,
-            variants: true,
+          }
+        : {
+            movies: {
+              orderBy: {
+                createdAt: "desc",
+              },
+              take: 10,
+              include: {
+                author: true,
+                variants: true,
+              },
+            },
+            author: true,
           },
-        },
-        author: true,
-      },
+      distinct: suggest ? ["title"] : undefined,
       where,
       orderBy: {
         updatedAt: "desc",
