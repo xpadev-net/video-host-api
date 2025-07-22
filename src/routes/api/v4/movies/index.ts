@@ -1,14 +1,14 @@
-import { HonoApp } from "@/@types/hono";
-import { Hono } from "hono";
-import { registerMovieRoute } from "@/routes/api/v4/movies/[movie]";
-import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
-import { prisma } from "@/lib/prisma";
-import { filterMovie } from "@/lib/filter";
+import { Hono } from "hono";
+import { z } from "zod";
+import type { HonoApp } from "@/@types/hono";
 import { ZVisibility } from "@/@types/models";
+import { filterMovie } from "@/lib/filter";
+import { prisma } from "@/lib/prisma";
+import { registerMovieRoute } from "@/routes/api/v4/movies/[movie]";
+import { buildVisibilityFilter } from "@/utils/buildVisibilityFilter";
 import { badRequest, unauthorized } from "@/utils/response";
 import { ok } from "@/utils/response/ok";
-import { buildVisibilityFilter } from "@/utils/buildVisibilityFilter";
 
 export const registerMoviesRoutes = (app: HonoApp) => {
   const api = new Hono() as HonoApp;

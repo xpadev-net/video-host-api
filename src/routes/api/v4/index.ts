@@ -1,9 +1,9 @@
-import {Hono} from "hono";
-import {registerAuthRoute} from "./auth";
-import {registerUsersRoute} from "@/routes/api/v4/users";
-import {HonoApp} from "@/@types/hono";
-import {registerSeriesRoutes} from "@/routes/api/v4/series";
-import {registerMoviesRoutes} from "@/routes/api/v4/movies";
+import { Hono } from "hono";
+import type { HonoApp } from "@/@types/hono";
+import { registerMoviesRoutes } from "@/routes/api/v4/movies";
+import { registerSeriesRoutes } from "@/routes/api/v4/series";
+import { registerUsersRoute } from "@/routes/api/v4/users";
+import { registerAuthRoute } from "./auth";
 
 export const registerV4Route = (app: HonoApp) => {
   const v4 = new Hono() as HonoApp;
@@ -12,4 +12,4 @@ export const registerV4Route = (app: HonoApp) => {
   registerSeriesRoutes(v4);
   registerMoviesRoutes(v4);
   app.route("/v4", v4);
-}
+};

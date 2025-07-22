@@ -1,15 +1,15 @@
-import { HonoApp } from "@/@types/hono";
-import { Hono } from "hono";
-import { registerSeriesRoute } from "@/routes/api/v4/series/[series]";
-import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
-import { prisma } from "@/lib/prisma";
-import { filterSeries } from "@/lib/filter";
+import type { Prisma } from "@prisma/client";
+import { Hono } from "hono";
+import { z } from "zod";
+import type { HonoApp } from "@/@types/hono";
 import { ZVisibility } from "@/@types/models";
-import { badRequest, unauthorized } from "@/utils/response";
-import { ok } from "@/utils/response/ok";
-import { Prisma } from "@prisma/client";
+import { filterSeries } from "@/lib/filter";
+import { prisma } from "@/lib/prisma";
+import { registerSeriesRoute } from "@/routes/api/v4/series/[series]";
 import { buildVisibilityFilter } from "@/utils/buildVisibilityFilter";
+import { unauthorized } from "@/utils/response";
+import { ok } from "@/utils/response/ok";
 
 export const registerSeriesRoutes = (app: HonoApp) => {
   const api = new Hono() as HonoApp;
@@ -31,7 +31,7 @@ const registerGetIndexRoute = (app: HonoApp) => {
     const where: Prisma.SeriesWhereInput = buildVisibilityFilter(
       c.get("user"),
       query,
-      author
+      author,
     );
 
     const series = await prisma.series.findMany({

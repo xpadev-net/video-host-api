@@ -1,9 +1,9 @@
-import { HonoApp } from "@/@types/hono";
-import { prisma } from "@/lib/prisma";
-import { filterSeries } from "@/lib/filter";
-import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
+import { z } from "zod";
+import type { HonoApp } from "@/@types/hono";
 import { ZVisibility } from "@/@types/models";
+import { filterSeries } from "@/lib/filter";
+import { prisma } from "@/lib/prisma";
 import { notFound, unauthorized } from "@/utils/response";
 import { ok } from "@/utils/response/ok";
 
