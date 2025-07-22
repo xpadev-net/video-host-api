@@ -3,7 +3,12 @@
   "version": "0.0.14",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "run": "tsx src/index.ts"
+    "run": "tsx src/index.ts",
+    "lint": "biome check .",
+    "lint:fix": "biome check . --write --unsafe",
+    "format": "biome format . --write",
+    "typecheck": "tsc --noEmit --skipLibCheck --pretty --noErrorTruncation --skipDefaultLibCheck --project tsconfig.json",
+    "prepare": "lefthook install || true"
   },
   "dependencies": {
     "@hono/node-server": "^1.13.2",
