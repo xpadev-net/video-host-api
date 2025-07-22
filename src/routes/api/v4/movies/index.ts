@@ -2,7 +2,11 @@ import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import { z } from "zod";
 import type { HonoApp } from "@/@types/hono";
-import { ZVisibility } from "@/@types/models";
+import {
+  type FilteredMovie,
+  type PaginatedResponse,
+  ZVisibility,
+} from "@/@types/models";
 import { filterMovie } from "@/lib/filter";
 import { prisma } from "@/lib/prisma";
 import { registerMovieRoute } from "@/routes/api/v4/movies/[movie]";
@@ -18,15 +22,23 @@ export const registerMoviesRoutes = (app: HonoApp) => {
   app.route("/movies", api);
 };
 
-const PAGE_SIZE = 100;
+const DEFAULT_PAGE_SIZE = 100;
+const MAX_PAGE_SIZE = 200;
 
 const registerGetIndexRoute = (app: HonoApp) => {
   app.get("/", async (c) => {
-    const page = c.req.queries("page");
+    const page = parseInt(c.req.queries("page")?.[0] || "1");
+    const limit = Math.min(
+      parseInt(c.req.queries("limit")?.[0] || DEFAULT_PAGE_SIZE.toString()),
+      MAX_PAGE_SIZE,
+    );
     const query = c.req.queries("query")?.[0];
     const author = c.req.queries("author")?.[0];
 
     const where = buildVisibilityFilter(c.get("user"), query, author);
+
+    // Get total count for pagination metadata
+    const totalCount = await prisma.movie.count({ where });
 
     const movies = await prisma.movie.findMany({
       where,
@@ -42,10 +54,27 @@ const registerGetIndexRoute = (app: HonoApp) => {
       orderBy: {
         createdAt: "desc",
       },
-      take: PAGE_SIZE,
-      skip: page ? (parseInt(page[0]) - 1) * PAGE_SIZE : 0,
+      take: limit,
+      skip: (page - 1) * limit,
     });
-    return ok(c, movies.map(filterMovie));
+
+    const totalPages = Math.ceil(totalCount / limit);
+    const hasNext = page < totalPages;
+    const hasPrev = page > 1;
+
+    const response: PaginatedResponse<FilteredMovie> = {
+      items: movies.map(filterMovie),
+      pagination: {
+        page,
+        limit,
+        totalCount,
+        totalPages,
+        hasNext,
+        hasPrev,
+      },
+    };
+
+    return ok(c, response);
   });
 };
 

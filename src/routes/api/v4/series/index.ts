@@ -3,7 +3,11 @@ import type { Prisma } from "@prisma/client";
 import { Hono } from "hono";
 import { z } from "zod";
 import type { HonoApp } from "@/@types/hono";
-import { ZVisibility } from "@/@types/models";
+import {
+  type FilteredSeries,
+  type PaginatedResponse,
+  ZVisibility,
+} from "@/@types/models";
 import { filterSeries } from "@/lib/filter";
 import { prisma } from "@/lib/prisma";
 import { registerSeriesRoute } from "@/routes/api/v4/series/[series]";
@@ -19,11 +23,16 @@ export const registerSeriesRoutes = (app: HonoApp) => {
   app.route("/series", api);
 };
 
-const PAGE_SIZE = 100;
+const DEFAULT_PAGE_SIZE = 100;
+const MAX_PAGE_SIZE = 200;
 
 const registerGetIndexRoute = (app: HonoApp) => {
   app.get("/", async (c) => {
-    const page = parseInt(c.req.queries("page")?.[0] ?? "1") - 1;
+    const page = parseInt(c.req.queries("page")?.[0] ?? "1");
+    const limit = Math.min(
+      parseInt(c.req.queries("limit")?.[0] || DEFAULT_PAGE_SIZE.toString()),
+      MAX_PAGE_SIZE,
+    );
     const query = c.req.queries("query")?.[0];
     const suggest = (c.req.queries("suggest")?.length ?? 0) > 0;
     const author = c.req.queries("author")?.[0];
@@ -34,33 +43,65 @@ const registerGetIndexRoute = (app: HonoApp) => {
       author,
     );
 
+    // For suggest mode, return simple format without pagination (backward compatibility)
+    if (suggest) {
+      const series = await prisma.series.findMany({
+        include: {
+          author: true,
+        },
+        distinct: ["title"],
+        where,
+        orderBy: {
+          updatedAt: "desc",
+        },
+        take: limit,
+        skip: (page - 1) * limit,
+      });
+      return ok(c, series.map(filterSeries));
+    }
+
+    // Get total count for pagination metadata
+    const totalCount = await prisma.series.count({ where });
+
     const series = await prisma.series.findMany({
-      include: suggest
-        ? {
-            author: true,
-          }
-        : {
-            movies: {
-              orderBy: {
-                createdAt: "desc",
-              },
-              take: 10,
-              include: {
-                author: true,
-                variants: true,
-              },
-            },
-            author: true,
+      include: {
+        movies: {
+          orderBy: {
+            createdAt: "desc",
           },
-      distinct: suggest ? ["title"] : undefined,
+          take: 10,
+          include: {
+            author: true,
+            variants: true,
+          },
+        },
+        author: true,
+      },
       where,
       orderBy: {
         updatedAt: "desc",
       },
-      take: PAGE_SIZE,
-      skip: page * PAGE_SIZE,
+      take: limit,
+      skip: (page - 1) * limit,
     });
-    return ok(c, series.map(filterSeries));
+
+    const totalPages = Math.ceil(totalCount / limit);
+    const hasNext = page < totalPages;
+    const hasPrev = page > 1;
+
+    const response: PaginatedResponse<FilteredSeries> = {
+      items: series.map(filterSeries),
+      pagination: {
+        page,
+        limit,
+        totalCount,
+        totalPages,
+        hasNext,
+        hasPrev,
+      },
+    };
+
+    return ok(c, response);
   });
 };
 
