@@ -91,6 +91,7 @@ model Movie {
   thumbnailUrl String?
   visibility   Visibility        @default(PUBLIC)
   externalId   String?           @unique @db.VarChar(512)
+  order        Int               @default(0)
   createdAt    DateTime          @default(now())
   updatedAt    DateTime          @updatedAt
   variants     MovieVariant[]
