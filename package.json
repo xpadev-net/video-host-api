@@ -11,28 +11,32 @@
     "prepare": "lefthook install || true"
   },
   "dependencies": {
-    "@hono/node-server": "^1.13.2",
-    "@hono/zod-validator": "^0.4.1",
+    "@hono/node-server": "^1.18.1",
+    "@hono/zod-validator": "^0.4.3",
     "@prisma/client": "5.20.0",
-    "@types/jsonwebtoken": "^9.0.7",
+    "@types/jsonwebtoken": "^9.0.10",
     "bcrypt": "^5.1.1",
-    "dotenv": "^16.4.5",
-    "hono": "^4.6.5",
+    "dotenv": "^16.6.1",
+    "hono": "^4.9.0",
     "jsonwebtoken": "^9.0.2",
-    "prisma": "^5.20.0",
-    "zod": "^3.23.8"
+    "prisma": "^5.22.0",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.1.2",
+    "@biomejs/biome": "^2.1.4",
     "@types/bcrypt": "^5.0.2",
-    "@types/node": "^20.11.17",
+    "@types/node": "^20.19.10",
     "lefthook": "^1.12.2",
-    "tsx": "^4.7.1",
-    "typescript": "^5.8.3"
+    "tsx": "^4.20.3",
+    "typescript": "^5.9.2"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
-      "lefthook"
+      "@prisma/client",
+      "@prisma/engines",
+      "esbuild",
+      "lefthook",
+      "prisma"
     ]
   }
 }
