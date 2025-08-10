@@ -53,9 +53,14 @@ const registerGetIndexRoute = (app: HonoApp) => {
           }
         : {
             movies: {
-              orderBy: {
-                createdAt: "desc",
-              },
+              orderBy: [
+                {
+                  order: "asc",
+                },
+                {
+                  createdAt: "asc",
+                },
+              ],
               take: 10,
               include: {
                 author: true,

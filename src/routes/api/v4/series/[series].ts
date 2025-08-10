@@ -46,9 +46,14 @@ const handleGet = (app: HonoApp) => {
       include: {
         author: true,
         movies: {
-          orderBy: {
-            createdAt: "asc",
-          },
+          orderBy: [
+            {
+              order: "asc",
+            },
+            {
+              createdAt: "asc",
+            },
+          ],
           include: {
             author: true,
             variants: true,
@@ -149,9 +154,14 @@ const handleGetMovies = (app: HonoApp) => {
         },
         variants: true,
       },
-      orderBy: {
-        createdAt: "asc",
-      },
+      orderBy: [
+        {
+          order: "asc",
+        },
+        {
+          createdAt: "asc",
+        },
+      ],
       take: limit,
       skip: (page - 1) * limit,
     });
