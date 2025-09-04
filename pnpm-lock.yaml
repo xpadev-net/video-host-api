@@ -10,10 +10,10 @@ importers:
     dependencies:
       '@hono/node-server':
         specifier: ^1.18.1
-        version: 1.18.1(hono@4.9.0)
+        version: 1.18.1(hono@4.9.6)
       '@hono/zod-validator':
         specifier: ^0.4.3
-        version: 0.4.3(hono@4.9.0)(zod@3.25.76)
+        version: 0.4.3(hono@4.9.6)(zod@3.25.76)
       '@prisma/client':
         specifier: 5.20.0
         version: 5.20.0(prisma@5.22.0)
@@ -27,8 +27,8 @@ importers:
         specifier: ^16.6.1
         version: 16.6.1
       hono:
-        specifier: ^4.9.0
-        version: 4.9.0
+        specifier: ^4.9.6
+        version: 4.9.6
       jsonwebtoken:
         specifier: ^9.0.2
         version: 9.0.2
@@ -338,8 +338,8 @@ packages:
   get-tsconfig@4.10.1:
     resolution: {integrity: sha512-auHyJ4AgMz7vgS8Hp3N6HXSmlMdUyhSUrfBF16w153rxtLIEOE+HGqaBppczZvnHLqQJfiHotCYpNhl0lUROFQ==}
 
-  hono@4.9.0:
-    resolution: {integrity: sha512-JAUc4Sqi3lhby2imRL/67LMcJFKiCu7ZKghM7iwvltVZzxEC5bVJCsAa4NTnSfmWGb+N2eOVtFE586R+K3fejA==}
+  hono@4.9.6:
+    resolution: {integrity: sha512-doVjXhSFvYZ7y0dNokjwwSahcrAfdz+/BCLvAMa/vHLzjj8+CFyV5xteThGUsKdkaasgN+gF2mUxao+SGLpUeA==}
     engines: {node: '>=16.9.0'}
 
   jsonwebtoken@9.0.2:
@@ -577,13 +577,13 @@ snapshots:
   '@esbuild/win32-x64@0.25.8':
     optional: true
 
-  '@hono/node-server@1.18.1(hono@4.9.0)':
+  '@hono/node-server@1.18.1(hono@4.9.6)':
     dependencies:
-      hono: 4.9.0
+      hono: 4.9.6
 
-  '@hono/zod-validator@0.4.3(hono@4.9.0)(zod@3.25.76)':
+  '@hono/zod-validator@0.4.3(hono@4.9.6)(zod@3.25.76)':
     dependencies:
-      hono: 4.9.0
+      hono: 4.9.6
       zod: 3.25.76
 
   '@prisma/client@5.20.0(prisma@5.22.0)':
@@ -668,7 +668,7 @@ snapshots:
     dependencies:
       resolve-pkg-maps: 1.0.0
 
-  hono@4.9.0: {}
+  hono@4.9.6: {}
 
   jsonwebtoken@9.0.2:
     dependencies:
