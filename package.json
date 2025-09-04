@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@hono/node-server": "^1.18.1",
-    "@hono/zod-validator": "^0.4.3",
+    "@hono/zod-validator": "^0.7.0",
     "@prisma/client": "5.22.0",
     "@types/jsonwebtoken": "^9.0.10",
     "bcryptjs": "^3.0.2",
