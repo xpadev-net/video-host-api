@@ -8,7 +8,7 @@
     "lint:fix": "biome check . --write --unsafe",
     "format": "biome format . --write",
     "typecheck": "tsc --noEmit --skipLibCheck --pretty --noErrorTruncation --skipDefaultLibCheck --project tsconfig.json",
-    "prepare": "lefthook install || pnpm prisma generate || true"
+    "prepare": "lefthook install; pnpm prisma generate || true"
   },
   "dependencies": {
     "@hono/node-server": "^1.18.1",
