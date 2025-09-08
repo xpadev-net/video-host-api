@@ -11,6 +11,9 @@
     "prepare": "lefthook install; pnpm prisma generate || true"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.883.0",
+    "@aws-sdk/credential-providers": "^3.883.0",
+    "@aws-sdk/s3-request-presigner": "^3.883.0",
     "@hono/node-server": "^1.18.1",
     "@hono/zod-validator": "^0.7.0",
     "@prisma/client": "6.15.0",
