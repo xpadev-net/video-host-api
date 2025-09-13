@@ -10,10 +10,10 @@ importers:
     dependencies:
       '@hono/node-server':
         specifier: ^1.18.1
-        version: 1.19.2(hono@4.9.6)
+        version: 1.19.2(hono@4.9.7)
       '@hono/zod-validator':
         specifier: ^0.7.0
-        version: 0.7.2(hono@4.9.6)(zod@4.1.7)
+        version: 0.7.2(hono@4.9.7)(zod@4.1.7)
       '@prisma/client':
         specifier: 6.16.0
         version: 6.16.0(prisma@6.16.0(typescript@5.9.2))(typescript@5.9.2)
@@ -28,7 +28,7 @@ importers:
         version: 17.2.2
       hono:
         specifier: ^4.9.0
-        version: 4.9.6
+        version: 4.9.7
       jsonwebtoken:
         specifier: ^9.0.2
         version: 9.0.2
@@ -401,8 +401,8 @@ packages:
     resolution: {integrity: sha512-L5bGsVkxJbJgdnwyuheIunkGatUF/zssUoxxjACCseZYAVbaqdh9Tsmmlkl8vYan09H7sbvKt4pS8GqKLBrEzA==}
     hasBin: true
 
-  hono@4.9.6:
-    resolution: {integrity: sha512-doVjXhSFvYZ7y0dNokjwwSahcrAfdz+/BCLvAMa/vHLzjj8+CFyV5xteThGUsKdkaasgN+gF2mUxao+SGLpUeA==}
+  hono@4.9.7:
+    resolution: {integrity: sha512-t4Te6ERzIaC48W3x4hJmBwgNlLhmiEdEE5ViYb02ffw4ignHNHa5IBtPjmbKstmtKa8X6C35iWwK4HaqvrzG9w==}
     engines: {node: '>=16.9.0'}
 
   jiti@2.5.1:
@@ -682,13 +682,13 @@ snapshots:
   '@esbuild/win32-x64@0.25.9':
     optional: true
 
-  '@hono/node-server@1.19.2(hono@4.9.6)':
+  '@hono/node-server@1.19.2(hono@4.9.7)':
     dependencies:
-      hono: 4.9.6
+      hono: 4.9.7
 
-  '@hono/zod-validator@0.7.2(hono@4.9.6)(zod@4.1.7)':
+  '@hono/zod-validator@0.7.2(hono@4.9.7)(zod@4.1.7)':
     dependencies:
-      hono: 4.9.6
+      hono: 4.9.7
       zod: 4.1.7
 
   '@prisma/client@6.16.0(prisma@6.16.0(typescript@5.9.2))(typescript@5.9.2)':
@@ -842,7 +842,7 @@ snapshots:
       nypm: 0.6.1
       pathe: 2.0.3
 
-  hono@4.9.6: {}
+  hono@4.9.7: {}
 
   jiti@2.5.1: {}
 
