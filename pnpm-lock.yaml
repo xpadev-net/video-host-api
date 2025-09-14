@@ -13,7 +13,7 @@ importers:
         version: 1.19.2(hono@4.9.7)
       '@hono/zod-validator':
         specifier: ^0.7.0
-        version: 0.7.2(hono@4.9.7)(zod@4.1.7)
+        version: 0.7.2(hono@4.9.7)(zod@4.1.8)
       '@prisma/client':
         specifier: 6.16.0
         version: 6.16.0(prisma@6.16.0(typescript@5.9.2))(typescript@5.9.2)
@@ -37,7 +37,7 @@ importers:
         version: 6.16.0(typescript@5.9.2)
       zod:
         specifier: ^4.0.0
-        version: 4.1.7
+        version: 4.1.8
     devDependencies:
       '@biomejs/biome':
         specifier: ^2.1.4
@@ -564,8 +564,8 @@ packages:
   undici-types@6.21.0:
     resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
 
-  zod@4.1.7:
-    resolution: {integrity: sha512-6qi6UYyzAl7W9uV29KvcSFXqK4QCYNYUz2YASPNBWpJE1RY6R1nArmmFPgGY/CBYWzpeMw3EOER+DR9a05O4IA==}
+  zod@4.1.8:
+    resolution: {integrity: sha512-5R1P+WwQqmmMIEACyzSvo4JXHY5WiAFHRMg+zBZKgKS+Q1viRa0C1hmUKtHltoIFKtIdki3pRxkmpP74jnNYHQ==}
 
 snapshots:
 
@@ -686,10 +686,10 @@ snapshots:
     dependencies:
       hono: 4.9.7
 
-  '@hono/zod-validator@0.7.2(hono@4.9.7)(zod@4.1.7)':
+  '@hono/zod-validator@0.7.2(hono@4.9.7)(zod@4.1.8)':
     dependencies:
       hono: 4.9.7
-      zod: 4.1.7
+      zod: 4.1.8
 
   '@prisma/client@6.16.0(prisma@6.16.0(typescript@5.9.2))(typescript@5.9.2)':
     optionalDependencies:
@@ -988,4 +988,4 @@ snapshots:
 
   undici-types@6.21.0: {}
 
-  zod@4.1.7: {}
+  zod@4.1.8: {}
