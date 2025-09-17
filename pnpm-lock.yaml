@@ -13,7 +13,7 @@ importers:
         version: 1.19.2(hono@4.9.7)
       '@hono/zod-validator':
         specifier: ^0.7.0
-        version: 0.7.2(hono@4.9.7)(zod@4.1.8)
+        version: 0.7.3(hono@4.9.7)(zod@4.1.8)
       '@prisma/client':
         specifier: 6.16.1
         version: 6.16.1(prisma@6.16.1(typescript@5.9.2))(typescript@5.9.2)
@@ -272,8 +272,8 @@ packages:
     peerDependencies:
       hono: ^4
 
-  '@hono/zod-validator@0.7.2':
-    resolution: {integrity: sha512-ub5eL/NeZ4eLZawu78JpW/J+dugDAYhwqUIdp9KYScI6PZECij4Hx4UsrthlEUutqDDhPwRI0MscUfNkvn/mqQ==}
+  '@hono/zod-validator@0.7.3':
+    resolution: {integrity: sha512-uYGdgVib3RlGD698WR5dVM0zB3UuPY5vHKXffGUbUh7r4xY+mFIhF3/v4AcQVLrU5CQdBso8BJr4wuVoCrjTuQ==}
     peerDependencies:
       hono: '>=3.9.0'
       zod: ^3.25.0 || ^4.0.0
@@ -686,7 +686,7 @@ snapshots:
     dependencies:
       hono: 4.9.7
 
-  '@hono/zod-validator@0.7.2(hono@4.9.7)(zod@4.1.8)':
+  '@hono/zod-validator@0.7.3(hono@4.9.7)(zod@4.1.8)':
     dependencies:
       hono: 4.9.7
       zod: 4.1.8
