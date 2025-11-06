@@ -1,4 +1,4 @@
-ARG NODE_VERSION=22-slim
+ARG NODE_VERSION=24-slim
 
 # Build phase
 FROM --platform=linux/amd64 node:$NODE_VERSION AS builder
