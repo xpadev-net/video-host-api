@@ -27,9 +27,9 @@ const MAX_PAGE_SIZE = 200;
 
 const registerGetIndexRoute = (app: HonoApp) => {
   app.get("/", async (c) => {
-    const page = parseInt(c.req.queries("page")?.[0] || "1");
+    const page = parseInt(c.req.queries("page")?.[0] || "1", 10);
     const limit = Math.min(
-      parseInt(c.req.queries("limit")?.[0] || DEFAULT_PAGE_SIZE.toString()),
+      parseInt(c.req.queries("limit")?.[0] || DEFAULT_PAGE_SIZE.toString(), 10),
       MAX_PAGE_SIZE,
     );
     const query = c.req.queries("query")?.[0];

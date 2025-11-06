@@ -29,10 +29,11 @@ const handleGet = (app: HonoApp) => {
     }
 
     // Check if client requests paginated movies
-    const moviesPage = parseInt(c.req.queries("moviesPage")?.[0] || "1");
+    const moviesPage = parseInt(c.req.queries("moviesPage")?.[0] || "1", 10);
     const moviesLimit = Math.min(
       parseInt(
         c.req.queries("moviesLimit")?.[0] || DEFAULT_MOVIES_LIMIT.toString(),
+        10,
       ),
       MAX_MOVIES_LIMIT,
     );
@@ -116,9 +117,12 @@ const handleGetMovies = (app: HonoApp) => {
       return notFound(c, "Series not found");
     }
 
-    const page = parseInt(c.req.queries("page")?.[0] || "1");
+    const page = parseInt(c.req.queries("page")?.[0] || "1", 10);
     const limit = Math.min(
-      parseInt(c.req.queries("limit")?.[0] || DEFAULT_MOVIES_LIMIT.toString()),
+      parseInt(
+        c.req.queries("limit")?.[0] || DEFAULT_MOVIES_LIMIT.toString(),
+        10,
+      ),
       MAX_MOVIES_LIMIT,
     );
 
